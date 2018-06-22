@@ -13,7 +13,7 @@ const actions = {
 }
 
 const mapState = (state) => ({
-  auth: state.auth
+  auth: state.firebase.auth
 })
 
 class NavBar extends Component {
