@@ -31,14 +31,18 @@ let render = () => {
         </ScrollToTop>
       </BrowserRouter>
     </Provider>, 
-    rootEl)
-}
+    rootEl);
+};
 
 if(module.hot) {
   module.hot.accept('./app/layout/App', () => {
-      setTimeout(render)
-  })
+      setTimeout(render);
+  });
 }
+
+store.firebaseAuthIsReady.then(() => {
+  render();
+})
 
 render();
 registerServiceWorker();
