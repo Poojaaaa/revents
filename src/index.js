@@ -44,5 +44,4 @@ store.firebaseAuthIsReady.then(() => {
   render();
 })
 
-render();
 registerServiceWorker();
