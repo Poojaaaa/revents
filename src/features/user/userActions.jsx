@@ -27,7 +27,7 @@ export const uploadProfileImage = (file, fileName) =>
     };
     try {
       // upload the file to firebase storage
-      let uploadedFile = await firebase.uploadedFile(path, file, null, options);
+      let uploadedFile = await firebase.uploadFile(path, file, null, options);
       // get url of image
       let downloadURL = await uploadedFile.uploadTaskSnapshot.downloadURL;
       // get userdoc
