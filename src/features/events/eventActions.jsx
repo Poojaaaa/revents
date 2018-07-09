@@ -76,7 +76,7 @@ export const getEventsForDashboard = lastEvent => async (
   const firestore = firebase.firestore();
   const eventsRef = firestore.collection("events");
   try {
-    dispatch(asyncActionStart());
+    dispatch(asyncActionStart())
     let startAfter =
       lastEvent &&
       (await firestore
@@ -84,14 +84,15 @@ export const getEventsForDashboard = lastEvent => async (
         .doc(lastEvent.id)
         .get());
     let query;
+
     lastEvent
       ? (query = eventsRef
-          // .where("date", ">=", today)
+          .where("date", ">=", today)
           .orderBy("date")
           .startAfter(startAfter)
           .limit(2))
       : (query = eventsRef
-          // .where("date", ">=", today)
+          .where("date", ">=", today)
           .orderBy("date")
           .limit(2));
 

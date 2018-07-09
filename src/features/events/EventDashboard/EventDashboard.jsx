@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Button } from 'semantic-ui-react'
+import { Grid, Loader } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import EventList from '../EventList/EventList'
@@ -27,7 +27,7 @@ class EventDashboard extends Component {
     let next = await this.props.getEventsForDashboard();
     console.log(next);
 
-    if(next && next.docs && next.docs.legth > 1) {
+    if(next && next.docs && next.docs.length > 1) {
       this.setState({
         moreEvents: true,
         loadingInitial: false
@@ -45,35 +45,37 @@ class EventDashboard extends Component {
 
   getNextEvents = async () => {
     const {events} = this.props;
-    let lastEvent = events && events[events.legth - 1];
+    let lastEvent = events && events[events.length - 1];
     console.log(lastEvent);
     let next = await this.props.getEventsForDashboard(lastEvent);
     console.log(next);
-    if(next && next.docs && next.docs.legth <= 1) {
+    if(next && next.docs && next.docs.length <= 1) {
       this.setState({
         moreEvents: false
       })
     }
   }
 
-  handleDeleteEvent = (eventId) => () => {
-    this.props.deleteEvent(eventId);
-  }
-
   render() {
     const { loading } = this.props;
+    const { moreEvents, loadedEvents } = this.state;
     if(this.state.loadingInitial) return <LoadingComponent inverted={true}/>
     return (
       <Grid>
         <Grid.Column width={10}>
           <EventList 
-            deleteEvent={this.handleDeleteEvent} 
-            events={this.state.loadedEvents}
+            loading={loading}
+            moreEvents={moreEvents}
+            events={loadedEvents}
+            getNextEvents={this.getNextEvents}
           />
-          <Button loading={loading} onClick={this.getNextEvents} disabled={!this.state.moreEvents} content='More' color='green' floated='right'/>
+          {/* <Button loading={loading} onClick={this.getNextEvents} disabled={!this.state.moreEvents} content='More' color='green' floated='right'/> */}
         </Grid.Column>
         <Grid.Column width={6}>
           <EventActivity/>
+        </Grid.Column>
+        <Grid.Column width={10}>
+          <Loader active={loading}/>
         </Grid.Column>
       </Grid>
     )
