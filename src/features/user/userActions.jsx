@@ -1,6 +1,7 @@
 import moment from "moment";
 import cuid from "cuid";
 import { toastr } from "react-redux-toastr";
+import { FETCH_EVENTS } from '../events/eventConstants'
 import {
   asyncActionStart,
   asyncActionFinish,
@@ -200,6 +201,12 @@ export const getUserEvents = (userUid, activeTab) => async (
   }
   try {
     let querySnap = await query.get();
+    let events= [];
+
+    for(let i = 0; i < querySnap.docs.legth; i++){
+
+    }
+
     console.log(querySnap);
     dispatch(asyncActionFinish());
   } catch (error) {
