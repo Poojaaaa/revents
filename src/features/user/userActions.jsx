@@ -208,9 +208,7 @@ export const getUserEvents = (userUid, activeTab) => async (
       events.push({...evt.data(), id: evt.id})
       console.log(querySnap);
     }
-
-    dispatch({type: FETCH_EVENTS, payload: {events}})
-
+    dispatch({type: FETCH_EVENTS, payload: {events}});
     dispatch(asyncActionFinish());
   } catch (error) {
     console.log(error);
