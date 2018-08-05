@@ -1,26 +1,25 @@
 /*global google*/
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withFirestore } from "react-redux-firebase";
-import { reduxForm, Field } from "redux-form";
-import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
-import Script from "react-load-script";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { reduxForm, Field } from 'redux-form';
+import { withFirestore } from 'react-redux-firebase';
+import Script from 'react-load-script';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import { Segment, Form, Button, Grid, Header } from 'semantic-ui-react';
 import {
-  combineValidators,
   composeValidators,
+  combineValidators,
   isRequired,
   hasLengthGreaterThan
-} from "revalidate";
-import { Segment, Form, Button, Grid, Header } from "semantic-ui-react";
-import { createEvent, updateEvent, cancelToggle } from "../eventActions";
-import TextInput from "../../../app/common/form/TextInput";
-import TextArea from "../../../app/common/form/TextArea";
-import SelectInput from "../../../app/common/form/SelectInput";
-import DateInput from "../../../app/common/form/DateInput";
-import PlaceInput from "../../../app/common/form/PlaceInput";
+} from 'revalidate';
+import { createEvent, updateEvent, cancelToggle } from '../eventActions';
+import TextInput from '../../../app/common/form/TextInput';
+import TextArea from '../../../app/common/form/TextArea';
+import SelectInput from '../../../app/common/form/SelectInput';
+import DateInput from '../../../app/common/form/DateInput';
+import PlaceInput from '../../../app/common/form/PlaceInput';
 
-const mapState = (state) => {
-
+const mapState = (state, ownProps) => {
   let event = {};
 
   if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
@@ -41,26 +40,26 @@ const actions = {
 };
 
 const category = [
-  { key: "drinks", text: "Drinks", value: "drinks" },
-  { key: "culture", text: "Culture", value: "culture" },
-  { key: "film", text: "Film", value: "film" },
-  { key: "food", text: "Food", value: "food" },
-  { key: "music", text: "Music", value: "music" },
-  { key: "travel", text: "Travel", value: "travel" }
+  { key: 'drinks', text: 'Drinks', value: 'drinks' },
+  { key: 'culture', text: 'Culture', value: 'culture' },
+  { key: 'film', text: 'Film', value: 'film' },
+  { key: 'food', text: 'Food', value: 'food' },
+  { key: 'music', text: 'Music', value: 'music' },
+  { key: 'travel', text: 'Travel', value: 'travel' }
 ];
 
 const validate = combineValidators({
-  title: isRequired({ message: "The event title is required" }),
-  category: isRequired({ message: "Please provide a category" }),
+  title: isRequired({ message: 'The event title is required' }),
+  category: isRequired({ message: 'Please provide a category' }),
   description: composeValidators(
-    isRequired({ message: "Please enter a description" }),
+    isRequired({ message: 'Please enter a description' }),
     hasLengthGreaterThan(4)({
-      message: "Description needs to be at least 5 characters"
+      message: 'Description needs to be at least 5 characters'
     })
   )(),
-  city: isRequired("city"),
-  venue: isRequired("venue"),
-  date: isRequired("date")
+  city: isRequired('city'),
+  venue: isRequired('venue'),
+  date: isRequired('date')
 });
 
 class EventForm extends Component {
@@ -70,7 +69,7 @@ class EventForm extends Component {
     scriptLoaded: false
   };
 
-  async componentDidMount () {
+  async componentDidMount() {
     const {firestore, match} = this.props;
     await firestore.setListener(`events/${match.params.id}`);
   }
@@ -91,7 +90,7 @@ class EventForm extends Component {
         });
       })
       .then(() => {
-        this.props.change("city", selectedCity);
+        this.props.change('city', selectedCity);
       });
   };
 
@@ -104,30 +103,30 @@ class EventForm extends Component {
         });
       })
       .then(() => {
-        this.props.change("venue", selectedVenue);
+        this.props.change('venue', selectedVenue);
       });
   };
 
-  onFormSubmit = async values => {
+  onFormSubmit = values => {
     values.venueLatLng = this.state.venueLatLng;
     if (this.props.initialValues.id) {
-      if(Object.keys(values.venueLatLng).length === 0) {
+      if (Object.keys(values.venueLatLng).length === 0) {
         values.venueLatLng = this.props.event.venueLatLng
       }
-      await this.props.updateEvent(values);
+      this.props.updateEvent(values);
       this.props.history.goBack();
     } else {
       this.props.createEvent(values);
-      this.props.history.push("/events");
+      this.props.history.push('/events');
     }
   };
 
   render() {
-    const { loading, invalid, submitting, pristine, event, cancelToggle } = this.props;
+    const { invalid, submitting, pristine, event, cancelToggle, loading } = this.props;
     return (
       <Grid>
         <Script
-          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVwvYkC9G035HlEGxahajvEjPXieGPlLk&libraries=places"
+          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1Oy3Ic6JyE6RR4eEbEFw2T-ynXjjWzTc&libraries=places"
           onLoad={this.handleScriptLoaded}
         />
         <Grid.Column width={10}>
@@ -150,30 +149,30 @@ class EventForm extends Component {
               <Field
                 name="description"
                 type="text"
-                rows={3}
                 component={TextArea}
+                rows={3}
                 placeholder="Tell us about your event"
               />
-              <Header sub color="teal" content="Event Location Details" />
+              <Header sub color="teal" content="Event Location details" />
               <Field
                 name="city"
                 type="text"
                 component={PlaceInput}
-                options={{ types: ["(cities)"] }}
-                placeholder="Event City"
+                options={{ types: ['(cities)'] }}
+                placeholder="Event city"
                 onSelect={this.handleCitySelect}
               />
               {this.state.scriptLoaded && (
                 <Field
                   name="venue"
                   type="text"
+                  component={PlaceInput}
                   options={{
                     location: new google.maps.LatLng(this.state.cityLatLng),
                     radius: 1000,
-                    types: ["establishment"]
+                    types: ['establishment']
                   }}
-                  component={PlaceInput}
-                  placeholder="Event Venue"
+                  placeholder="Event venue"
                   onSelect={this.handleVenueSelect}
                 />
               )}
@@ -184,7 +183,7 @@ class EventForm extends Component {
                 dateFormat="YYYY-MM-DD HH:mm"
                 timeFormat="HH:mm"
                 showTimeSelect
-                placeholder="Date and Time of event"
+                placeholder="Date and time of event"
               />
               <Button
                 loading={loading}
@@ -192,19 +191,20 @@ class EventForm extends Component {
                 positive
                 type="submit"
               >
-                {" "}
-                Submit{" "}
+                Submit
               </Button>
               <Button disabled={loading} onClick={this.props.history.goBack} type="button">
                 Cancel
               </Button>
+              {event.id &&
               <Button
+
                 onClick={() => cancelToggle(!event.cancelled, event.id)}
                 type='button'
                 color={event.cancelled ? 'green' : 'red'}
                 floated='right'
-                content={event.cancelled ? 'Reactivate Event' : 'Cancel event'}
-              />
+                content={event.cancelled ? 'Reactivate Event' : 'Cancel Event'}
+              />}
             </Form>
           </Segment>
         </Grid.Column>
@@ -214,11 +214,8 @@ class EventForm extends Component {
 }
 
 export default withFirestore(
-  connect(
-    mapState,
-    actions
-  )(
-    reduxForm({ form: "eventForm", enableReinitialize: true, validate })(
+  connect(mapState, actions)(
+    reduxForm({ form: 'eventForm', enableReinitialize: true, validate })(
       EventForm
     )
   )
