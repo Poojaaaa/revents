@@ -10,9 +10,6 @@ From the terminal clone the project
 
   Step 4: $npm start
 
-## URL of the project
-https://revents-c1277.firebaseapp.com
-
 # Screenshots
 
 ### HomePage
